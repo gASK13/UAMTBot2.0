@@ -23,8 +23,8 @@ jobs:
         - name: zip
           uses: montudor/action-zip@v0.1.0
           with:
-            args: zip -qq -r ./bundle.zip ./processing/
-            working-directory: path/to/work-dir
+            args: zip -qq -r ./bundle.zip ./*
+            working-directory: ./processing
         - name: default deploy
           uses: appleboy/lambda-action@master
           with:
@@ -32,4 +32,4 @@ jobs:
             aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws_region: us-east-1
             function_name: uamtBotProcessingLambda
-            zip_file: bundle.zip
+            zip_file: ./processing/bundle.zip
