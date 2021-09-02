@@ -20,11 +20,10 @@ jobs:
        runs-on: ubuntu-latest
        steps:
         - uses: actions/checkout@v1
+        - uses: montudor/action-zip@v0.1.0
         - name: zip
-          uses: montudor/action-zip@v0.1.0
-          with:
-            args: zip -qq -r ./bundle.zip ./*
-            working-directory: ./processing
+          run: zip -qq -r ../bundle.zip *
+          working-directory: processing
         - name: default deploy
           uses: appleboy/lambda-action@master
           with:
@@ -32,4 +31,4 @@ jobs:
             aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws_region: us-east-1
             function_name: uamtBotProcessingLambda
-            zip_file: ./processing/bundle.zip
+            zip_file: bundle.zip
