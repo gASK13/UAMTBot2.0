@@ -12,13 +12,16 @@ def get_user(body):
 
 def post_response(content, body):
     # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
-    requests.patch(url = 'https://discord.com/api/v8/webhooks/' + os.environ['APP_ID'] + '/' + body.get('token') + "/messages/@original", headers = authConfig, data = {
-            "content" : content
+    requests.patch(url = 'https://discord.com/api/v8/webhooks/' + os.environ['APP_ID'] + '/' + body.get('token') + "/messages/@original", headers = authConfig, json = {
+            "content" : content,
+            "allowed_mentions" : {
+                "parse": []
+            }
         })
 
 def post_to_channel(body):
     print(body)
-    r = requests.post(url = 'https://discord.com/api/v8/channels/' + body.get('data').get('options')[0].get('value') + '/messages', headers = authConfig, data = {
+    r = requests.post(url = 'https://discord.com/api/v8/channels/' + body.get('data').get('options')[0].get('value') + '/messages', headers = authConfig, json = {
         "content" : body.get('data').get('options')[1].get('value'),
         "allowed_mentions": {
             "users": [body.get('data').get('options')[2].get('value')]
