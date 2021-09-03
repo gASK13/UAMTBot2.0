@@ -39,9 +39,9 @@ def lambda_handler(event, context):
             post_response("Bots dispatched...")
             time.sleep(10)
             post_to_channel(body)
-            post_response("Bots have delivered their payload.")
+            post_response("Bots have delivered their payload.", body)
         else:
-            post_response("Sorry, Dave, I cannot do that.")
+            post_response("Sorry, Dave, I cannot do that.", body)
     elif body.get('data').get('name') == 'sleep':
         dur = body.get('data').get('options')[0].get('value')
         if dur > 20 or dur < 0:
