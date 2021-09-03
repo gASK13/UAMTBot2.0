@@ -56,6 +56,10 @@ def lambda_handler(event, context):
     return {
         "type": RESPONSE_TYPES['DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE'],
         "data": {
-            "content": "Will the real UAMTBOT please stand up, please stand up, please stand up.... "
+            "content": "Will the real UAMTBOT please stand up, please stand up, please stand up.... ",
+            ,
+            "allowed_mentions": {
+                "parse": []
+            }
         }
     }
