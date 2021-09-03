@@ -14,8 +14,9 @@ def post_response(content, body):
     # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
     requests.patch(url = 'https://discord.com/api/v8/webhooks/' + os.environ['APP_ID'] + '/' + body.get('token') + "/messages/@original", headers = authConfig, data = {
             "content" : content,
-            "allowed_mentions":
-                "parse":[]
+            "allowed_mentions": {
+                "parse": []
+            }
         })
 
 def post_to_channel():
