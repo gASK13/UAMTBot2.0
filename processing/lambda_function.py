@@ -12,20 +12,21 @@ def get_user(body):
 
 def post_response(content, body):
     # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
-    requests.patch(url = 'https://discord.com/api/v8/webhooks/' + os.environ['APP_ID'] + '/' + body.get('token') + "/messages/@original", headers = authConfig, data = {
+    print(requests.patch(url = 'https://discord.com/api/v8/webhooks/' + os.environ['APP_ID'] + '/' + body.get('token') + "/messages/@original", headers = authConfig, data = {
             "content" : content,
             "allowed_mentions": {
                 "parse": []
             }
-        })
+        }))
 
 def post_to_channel(body):
-    requests.post(url = '/channels/' + body.get('data').get('options')[0].get('value') + '/messages', headers = authConfig, data = {
+    print(body)
+    print(requests.post(url = '/channels/' + body.get('data').get('options')[0].get('value') + '/messages', headers = authConfig, data = {
         "content" : body.get('data').get('options')[1].get('value'),
         "allowed_mentions": {
             "users": [body.get('data').get('options')[2].get('value')]
         }
-    })
+    }))
 
 def lambda_handler(event, context):
     print(f"event {event}") # debug print
@@ -37,7 +38,7 @@ def lambda_handler(event, context):
         post_response("Sorry, " + get_user(body) + ", can't slap **" + body.get('data').get('options')[0].get('value') + "** yet. Ask <@412352063125717002> to fix this!", body)
         return
     elif body.get('data').get('name') == 'post':
-        if body.get('data').get('member').get('id') == 412352063125717002:
+        if body.get('data').get('member').get('user').get('id') == '412352063125717002':
             post_response("Bots dispatched...")
             time.sleep(10)
             post_to_channel(body)
