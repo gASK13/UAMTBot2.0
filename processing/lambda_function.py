@@ -18,7 +18,7 @@ def post_response(content, body):
 
 def post_to_channel(body):
     print(body)
-    print(requests.post(url = '/channels/' + body.get('data').get('options')[0].get('value') + '/messages', headers = authConfig, data = {
+    print(requests.post(url = 'https://discord.com/api/v8/channels/' + body.get('data').get('options')[0].get('value') + '/messages', headers = authConfig, data = {
         "content" : body.get('data').get('options')[1].get('value'),
         "allowed_mentions": {
             "users": [body.get('data').get('options')[2].get('value')]
