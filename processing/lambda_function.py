@@ -19,7 +19,7 @@ def post_response(content, body):
             }
         })
 
-def post_to_channel():
+def post_to_channel(body):
     requests.post(url = '/channels/' + body.get('data').get('options')[0].get('value') + '/messages', headers = authConfig, data = {
         "content" : body.get('data').get('options')[1].get('value'),
         "allowed_mentions": {
@@ -40,7 +40,8 @@ def lambda_handler(event, context):
         if body.get('data').get('member').get('id') == 412352063125717002:
             post_response("Bots dispatched...")
             time.sleep(10)
-            //post
+            post_to_channel(body)
+            post_response("Bots have delivered their payload.")
         else:
             post_response("Sorry, Dave, I cannot do that.")
     elif body.get('data').get('name') == 'sleep':
