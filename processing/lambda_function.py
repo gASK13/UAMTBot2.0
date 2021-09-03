@@ -36,7 +36,7 @@ def lambda_handler(event, context):
         return
     elif body.get('data').get('name') == 'post':
         if body.get('member').get('user').get('id') == '412352063125717002':
-            post_response("Bots dispatched...")
+            post_response("Bots dispatched...", body)
             time.sleep(10)
             post_to_channel(body)
             post_response("Bots have delivered their payload.", body)
