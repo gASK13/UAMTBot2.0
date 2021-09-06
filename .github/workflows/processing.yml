@@ -22,7 +22,7 @@ jobs:
         - uses: actions/checkout@v1
         - uses: montudor/action-zip@v0.1.0
         - name: zip processing
-          run: zip -qq -r ../processing.zip ./processing ./uamtbot
+          run: zip -qq -r ./processing.zip ./processing ./uamtbot
         - name: zip interaction
           run: zip -qq -r ../interaction.zip *
           working-directory: interaction
