@@ -12,5 +12,3 @@ def lambda_handler(event, context):
     token = body.get('token')
 
     UamtBot.handle_command(command, options, user, token)
-
-lambda_handler({ 'body-json' : { 'data' : { 'name' : 'slap', 'options' : [] }, 'member' : {}, 'token' : 'test'}}, None)
