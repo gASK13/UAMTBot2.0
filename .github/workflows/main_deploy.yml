@@ -23,9 +23,9 @@ jobs:
           pip install pytest
       - name: Run tests
         run: pytest --rootdir=tests
-  deploy_source:
+  deploy_process:
     if: ${{ github.ref == 'refs/heads/master' }}
-    name: build and deploy lambda
+    name: Deploy Processing LAMBDA
     needs: test
     runs-on: ubuntu-latest
     steps:
@@ -44,3 +44,22 @@ jobs:
           aws_region: us-east-1
           function_name: uamtBotProcessingLambda
           zip_file: processing.zip
+  deploy_inter:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    name: Deploy Interactions LAMBDA
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: montudor/action-zip@v0.1.0
+      - name: Zip interactions
+        run: zip -qq -r ../interaction.zip *
+        working-directory: interaction
+      - name: Deploy interaction Lambda
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          function_name: uamtBotInteractionBasicLambda
+          zip_file: interaction.zip
