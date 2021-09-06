@@ -1,4 +1,4 @@
-import uamtbot
+from uamtbot import UamtBot
 
 
 def lambda_handler(event, context):
