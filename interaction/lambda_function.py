@@ -25,6 +25,7 @@ def verify_signature(event):
     verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
     verify_key.verify(message, bytes.fromhex(auth_sig)) # raises an error if unequal
 
+
 def ping_pong(body):
     if body.get("type") == 1:
         return True
@@ -38,7 +39,6 @@ def lambda_handler(event, context):
         verify_signature(event)
     except Exception as e:
         raise Exception(f"[UNAUTHORIZED] Invalid request signature: {e}")
-
 
     # check if message is a ping
     body = event.get('body-json')

@@ -5,10 +5,12 @@ import os
 
 authConfig = { 'Authorization': os.environ['BOT_TOKEN'] }
 
+
 def get_user(body):
     if body.get('member').get('nick') is not None:
         return body.get('member').get('nick')
     return body.get('member').get('user').get('username')
+
 
 def post_response(content, body):
     # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
@@ -18,6 +20,7 @@ def post_response(content, body):
                 "parse": []
             }
         })
+
 
 def post_to_channel(body):
     print(body)
@@ -29,6 +32,7 @@ def post_to_channel(body):
     })
     print(r)
     print(r.json())
+
 
 def lambda_handler(event, context):
     print(f"event {event}") # debug print
