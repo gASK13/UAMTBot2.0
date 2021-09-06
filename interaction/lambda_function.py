@@ -3,7 +3,6 @@ import boto3
 import os
 
 from nacl.signing import VerifyKey
-from nacl.exceptions import BadSignatureError
 
 PUBLIC_KEY = os.environ['PUBLIC_KEY']
 PING_PONG = {"type": 1}

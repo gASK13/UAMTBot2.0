@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Processing LAMBDA
+name: Interactions LAMBDA
 
 # Controls when the workflow will run
 on:
@@ -21,16 +21,14 @@ jobs:
        steps:
         - uses: actions/checkout@v1
         - uses: montudor/action-zip@v0.1.0
-        - name: zip processing
-          run: zip -qq -r ../processing.zip *
-          working-directory: processing
-        - name: zip bot into processing
-          run: zip -r processing.zip ./uamtbot
-        - name: deploy processing
+        - name: zip interaction
+          run: zip -qq -r ../interaction.zip *
+          working-directory: interaction
+        - name: deploy interaction
           uses: appleboy/lambda-action@master
           with:
             aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws_region: us-east-1
-            function_name: uamtBotProcessingLambda
-            zip_file: processing.zip
+            function_name: uamtBotInteractionBasicLambda
+            zip_file: interaction.zip
