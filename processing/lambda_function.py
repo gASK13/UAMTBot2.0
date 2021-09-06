@@ -1,4 +1,4 @@
-from uamtbot.bot import UamtBot
+from uamtbot import UamtBot
 
 
 def lambda_handler(event, context):
@@ -11,4 +11,4 @@ def lambda_handler(event, context):
     user = body.get('member')
     token = body.get('token')
 
-    UamtBot.handle_command(command, options, user, token)
+    UamtBot().handle_command(command, options, user, token)
