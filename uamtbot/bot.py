@@ -75,6 +75,9 @@ class UamtBot:
     def remove_note(self, options):
         user_id = self.user['user']['id']
         notes = self.store.get(key=user_id)
+        if len(options) != 1:
+            self.post_response("Please use exactly one of `index` or `note text` as an option.")
+            return
         if not notes:
             self.post_response("Nice try, but you got no notes...")
             return
