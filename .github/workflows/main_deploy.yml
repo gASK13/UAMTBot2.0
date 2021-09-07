@@ -62,4 +62,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
           function_name: uamtBotInteractionBasicLambda
-          zip_file: lambdas/interactions/interaction.zip
+          zip_file: lambdas/interaction/interaction.zip
