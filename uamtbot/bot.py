@@ -84,7 +84,7 @@ class UamtBot:
         if options[0]['name'] == 'index':
             idx = int(options[0]['value']) - 1
             if (idx < 0) | (idx >= len(notes['notes'])):
-                self.post_response("Sorry, you only have " + len(notes['notes']) + " ideas")
+                self.post_response("Sorry, you only have " + str(len(notes['notes'])) + " ideas")
                 return
         elif options[0]['name'] == 'note':
             val = options[0]['value'].lower()
