@@ -1,6 +1,8 @@
 import time
 import os
+import discord
 from .poster.poster import Poster
+from .dynastore.dynastore import DynaStore
 
 
 class UamtBot:
@@ -11,31 +13,98 @@ class UamtBot:
         return os.environ['APP_ID'] if 'APP_ID' in os.environ else 'N/A'
 
     def handle_command(self, command, options, user, token):
-        if command == 'slap':
+        self.user = user
+        self.token = token
+        if command == 'notes':
+            self.process_notes(options)
+        elif command == 'slap':
             self.post_response("Sorry, " + self.get_user(user) + ", can't slap **" + options[0].get(
-                'value') + "** yet. Ask <@412352063125717002> to fix this!", token)
+                'value') + "** yet. Ask <@412352063125717002> to fix this!")
             return
         elif command == 'post':
             if user.get('id') == '412352063125717002':
-                self.post_response("Bots dispatched...", token)
+                self.post_response("Bots dispatched...")
                 time.sleep(10)
                 self.post_to_channel(options)
-                self.post_response("Bots have delivered their payload.", token)
+                self.post_response("Bots have delivered their payload.")
             else:
-                self.post_response("Sorry, Dave, I cannot do that.", token)
+                self.post_response("Sorry, Dave, I cannot do that.")
         elif command == 'sleep':
             dur = options[0].get('value')
             if dur > 20 or dur < 0:
-                self.post_response("Sorry. Can't sleep that long, maximum 20 seconds....", token)
+                self.post_response("Sorry. Can't sleep that long, maximum 20 seconds....")
                 return
             for i in range(0, dur):
-                self.post_response("Sleeping for " + str(i) + " seconds...", token)
+                self.post_response("Sleeping for " + str(i) + " seconds...")
                 time.sleep(1)
-            self.post_response("I'm done now, " + self.get_user(user) + ", are you happy?", token)
+            self.post_response("I'm done now, " + self.get_user(user) + ", are you happy?")
             return
         else:
-            self.post_response("BORK BORK boooooork .... ", token)
+            self.post_response("BORK BORK boooooork .... ")
             return
+
+    def process_notes(self, options):
+        self.store = DynaStore(tableName='notes')
+        subcommand = options[0]['name']
+        suboptions = options[0]['name']
+        if subcommand == 'list':
+            self.list_notes(suboptions)
+
+    def add_note(self, options):
+        note_text = options[0]['value']
+        notes = self.store.get(key=self.user['user']['id'])
+        if not notes:
+            notes = { 'notes' : [] }
+        notes['notes'].append(note_text)
+        self.store.store(key=self.user['user']['id'], value=notes)
+        self.post_response("Note `" + note_text[:15] + "...` saved...")
+
+    def remove_note(self, options):
+        user_id = self.user['user']['id']
+        notes = self.store.get(key=user_id)
+        if options[0]['name'] == 'index':
+            idx = int(options[0]['value'])
+            if idx > len(notes['notes']):
+                self.post_response("Sorry, you only have " + len(notes['notes']) + " ideas")
+                return
+        elif options[0]['name'] == 'note':
+            val = options[0]['value']
+            idx = None
+            for i in range(len(notes['notes'])):
+                if val in notes['notes']:
+                    if idx:
+                        self.post_response("You need to be more clear, there are multiple such notes")
+                        return
+                    idx = i
+            if not idx:
+                self.post_response("Sorry, no such note was found.")
+                return
+        removed = notes['notes'].pop(idx - 1)
+        self.store.store(key=user_id, value=notes)
+        self.post_response('`' + removed + '` was not a good one anyway....')
+
+    def clear_notes(self):
+        self.post_response("Not implemented yet. Sorry.")
+
+    def list_notes(self, options):
+        if len(options) == 1:
+            user_id = options[0]['value']
+        else:
+            user_id = self.user['user']['id']
+        notes = self.store.get(key=user_id)
+        if not notes:
+            if user_id == self.user['user']['id']:
+                self.post_response("You have no notes. Did you forget already?")
+            else:
+                self.post_response("<@" + user_id + "> has no notes. Ask him to add some maybe?")
+        else:
+            if user_id == self.user['user']['id']:
+                text = 'Your notes:\r\n'
+            else:
+                text = '<@' + user_id + ">'s notes:\r\n"
+            for i in range(len(notes['notes'])):
+                text += str(i) + '. => `' + notes['notes'][i] + '`\r\n'
+            self.post_response(text)
 
     def get_user(self, user):
         if user is not None:
@@ -45,10 +114,10 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content, token):
+    def post_response(self, content):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
         self.poster.patch(
-            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + token + "/messages/@original",
+            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original",
             json={
                 "content": content,
                 "allowed_mentions": {
