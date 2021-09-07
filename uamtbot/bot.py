@@ -82,8 +82,8 @@ class UamtBot:
             self.post_response("Nice try, but you got no notes...")
             return
         if options[0]['name'] == 'index':
-            idx = int(options[0]['value'])
-            if idx > len(notes['notes']):
+            idx = int(options[0]['value']) - 1
+            if idx < 0 | idx >= len(notes['notes']):
                 self.post_response("Sorry, you only have " + len(notes['notes']) + " ideas")
                 return
         elif options[0]['name'] == 'note':
@@ -98,7 +98,7 @@ class UamtBot:
             if not idx:
                 self.post_response("Sorry, no such note was found.")
                 return
-        removed = notes['notes'].pop(idx - 1)
+        removed = notes['notes'].pop(idx)
         self.store.store(key=user_id, value=notes)
         self.post_response('`' + removed + '` was not a good one anyway....')
 
