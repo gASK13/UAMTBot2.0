@@ -13,35 +13,43 @@ class UamtBot:
         return os.environ['APP_ID'] if 'APP_ID' in os.environ else 'N/A'
 
     def handle_command(self, command, options, user, token):
-        self.user = user
-        self.token = token
-        if command == 'notes':
-            self.process_notes(options)
-        elif command == 'slap':
-            self.post_response("Sorry, " + self.get_user(user) + ", can't slap **" + options[0].get(
-                'value') + "** yet. Ask <@412352063125717002> to fix this!")
-            return
-        elif command == 'post':
-            if user.get('id') == '412352063125717002':
-                self.post_response("Bots dispatched...")
-                time.sleep(10)
-                self.post_to_channel(options)
-                self.post_response("Bots have delivered their payload.")
-            else:
-                self.post_response("Sorry, Dave, I cannot do that.")
-        elif command == 'sleep':
-            dur = options[0].get('value')
-            if dur > 20 or dur < 0:
-                self.post_response("Sorry. Can't sleep that long, maximum 20 seconds....")
+        try:
+            self.user = user
+            self.token = token
+            if command == 'notes':
+                self.process_notes(options)
+            elif command == 'slap':
+                self.post_response("Sorry, " + self.get_user(user) + ", can't slap **" + options[0].get(
+                    'value') + "** yet. Ask <@412352063125717002> to fix this!")
                 return
-            for i in range(0, dur):
-                self.post_response("Sleeping for " + str(i) + " seconds...")
-                time.sleep(1)
-            self.post_response("I'm done now, " + self.get_user(user) + ", are you happy?")
-            return
-        else:
-            self.post_response("BORK BORK boooooork .... ")
-            return
+            elif command == 'post':
+                if user.get('id') == '412352063125717002':
+                    self.post_response("Bots dispatched...")
+                    time.sleep(10)
+                    self.post_to_channel(options)
+                    self.post_response("Bots have delivered their payload.")
+                else:
+                    self.post_response("Sorry, Dave, I cannot do that.")
+            elif command == 'sleep':
+                dur = options[0].get('value')
+                if dur > 20 or dur < 0:
+                    self.post_response("Sorry. Can't sleep that long, maximum 20 seconds....")
+                    return
+                for i in range(0, dur):
+                    self.post_response("Sleeping for " + str(i) + " seconds...")
+                    time.sleep(1)
+                self.post_response("I'm done now, " + self.get_user(user) + ", are you happy?")
+                return
+            else:
+                self.post_response("BORK BORK boooooork .... ")
+                return
+        except Exception as inst:
+            print(type(inst))
+            print(inst.args)
+            print(inst)
+        except:
+            self.post_response("Something went wrong. I can feel it...")
+            print('Oops, hidden error?')
 
     def process_notes(self, options):
         self.store = DynaStore(tableName='notes')
@@ -54,7 +62,7 @@ class UamtBot:
         note_text = options[0]['value']
         notes = self.store.get(key=self.user['user']['id'])
         if not notes:
-            notes = { 'notes' : [] }
+            notes = {'notes': []}
         notes['notes'].append(note_text)
         self.store.store(key=self.user['user']['id'], value=notes)
         self.post_response("Note `" + note_text[:15] + "...` saved...")
