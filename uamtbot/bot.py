@@ -119,7 +119,7 @@ class UamtBot:
             else:
                 text = '<@' + user_id + ">'s notes:\r\n"
             for i in range(len(notes['notes'])):
-                text += str(i) + '. => `' + notes['notes'][i] + '`\r\n'
+                text += '#' + str(i + 1) + ' => `' + notes['notes'][i] + '`\r\n'
             self.post_response(text)
 
     def get_user(self, user):
