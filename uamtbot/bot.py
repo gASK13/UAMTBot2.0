@@ -53,7 +53,7 @@ class UamtBot:
     def process_notes(self, options):
         self.store = DynaStore(tableName='notes')
         subcommand = options[0]['name']
-        suboptions = options[0]['name']
+        suboptions = options[0]['options']
         if subcommand == 'list':
             self.list_notes(suboptions)
         elif subcommand == 'add':
