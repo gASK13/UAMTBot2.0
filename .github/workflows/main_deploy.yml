@@ -32,10 +32,10 @@ jobs:
       - uses: actions/checkout@v2
       - uses: montudor/action-zip@v0.1.0
       - name: Zip Processing
-        run: zip -qq -r ../processing.zip *
-        working-directory: processing
+        run: zip -qq -r ./processing.zip *
+        working-directory: lambdas/processing
       - name: Zip bot code into processing
-        run: zip -r processing.zip ./uamtbot
+        run: zip -r lambdas/processing/processing.zip ./uamtbot
       - name: Deploy processing to LAMBDA
         uses: appleboy/lambda-action@master
         with:
@@ -43,7 +43,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
           function_name: uamtBotProcessingLambda
-          zip_file: processing.zip
+          zip_file: lambdas/processing/processing.zip
   deploy_inter:
     if: ${{ github.ref == 'refs/heads/master' }}
     name: Deploy Interactions LAMBDA
@@ -53,8 +53,8 @@ jobs:
       - uses: actions/checkout@v1
       - uses: montudor/action-zip@v0.1.0
       - name: Zip interactions
-        run: zip -qq -r ../interaction.zip *
-        working-directory: interaction
+        run: zip -qq -r ./interaction.zip *
+        working-directory: lambdas/interaction
       - name: Deploy interaction Lambda
         uses: appleboy/lambda-action@master
         with:
@@ -62,4 +62,4 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: us-east-1
           function_name: uamtBotInteractionBasicLambda
-          zip_file: interaction.zip
+          zip_file: lambdas/interactions/interaction.zip
