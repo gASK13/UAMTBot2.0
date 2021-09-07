@@ -44,12 +44,11 @@ class UamtBot:
                 self.post_response("BORK BORK boooooork .... ")
                 return
         except Exception as inst:
+            self.post_response("Something went wrong. I can feel it...")
             print(type(inst))
             print(inst.args)
             print(inst)
-        except:
-            self.post_response("Something went wrong. I can feel it...")
-            print('Oops, hidden error?')
+            raise
 
     def process_notes(self, options):
         self.store = DynaStore(tableName='notes')
