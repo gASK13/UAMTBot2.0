@@ -38,9 +38,12 @@ class UamtBot:
             return
 
     def get_user(self, user):
-        if user.get('nick') is not None:
-            return user.get('nick')
-        return user.get('user').get('username')
+        if user is not None:
+            if user.get('nick') is not None:
+                return user.get('nick')
+            elif user.get('user') is not None:
+                return user.get('user').get('username')
+        return '?$#@'
 
     def post_response(self, content, token):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
