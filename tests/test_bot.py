@@ -9,12 +9,10 @@ class TestBotHandler(unittest.TestCase):
         self.bot = UamtBot()
         self.bot.poster = MagicMock()
 
-    def test_nothing(self):
-        self.assertTrue(1 == 2)
-
     def test_slap(self):
         self.bot.handle_command('slap', [{'value': 'test test'}], {'nick': 'NICK'}, 'token')
         self.bot.poster.patch.assert_called_with(url='https://discord.com/api/v8/webhooks/N/A/token/messages/@original',
                                                  json={
-                                                     'content': "Sorry, NICK, can't slap **test test** yet. Ask <@412352063125717002> to fix this!",
+                                                     'content': "Sorry, NICK, can't slap **test test** yet. Ask "
+                                                                "<@412352063125717002> to fix this!",
                                                      'allowed_mentions': {'parse': []}})
