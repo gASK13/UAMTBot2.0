@@ -56,6 +56,12 @@ class UamtBot:
         suboptions = options[0]['name']
         if subcommand == 'list':
             self.list_notes(suboptions)
+        elif subcommand == 'add':
+            self.add_note(suboptions)
+        elif subcommand == 'remove':
+            self.remove_note(suboptions)
+        elif subcommand == 'clear':
+            self.clear_notes()
 
     def add_note(self, options):
         note_text = options[0]['value']
