@@ -87,10 +87,10 @@ class UamtBot:
                 self.post_response("Sorry, you only have " + len(notes['notes']) + " ideas")
                 return
         elif options[0]['name'] == 'note':
-            val = options[0]['value']
+            val = options[0]['value'].lower()
             idx = None
             for i in range(len(notes['notes'])):
-                if val in notes['notes']:
+                if val in notes['notes'][i].lower():
                     if idx:
                         self.post_response("You need to be more clear, there are multiple such notes")
                         return
