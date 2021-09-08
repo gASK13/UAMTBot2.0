@@ -1,4 +1,5 @@
 from uamtbot import UamtBot
+import traceback
 
 
 def lambda_handler(event, context):
@@ -12,5 +13,5 @@ def lambda_handler(event, context):
     token = body.get('token')
     try:
         UamtBot().handle_command(command, options, user, token)
-    except Exception as inst:
-        pass  # this got logged above, so we just need make sure we return correctly
+    except Exception:
+        traceback.print_exc()

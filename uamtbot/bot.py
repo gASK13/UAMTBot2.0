@@ -1,3 +1,4 @@
+import traceback
 import time
 import os
 import discord
@@ -43,11 +44,9 @@ class UamtBot:
             else:
                 self.post_response("BORK BORK boooooork .... ")
                 return
-        except Exception as inst:
+        except Exception:
             self.post_response("Something went wrong. I can feel it...")
-            print(type(inst))
-            print(inst.args)
-            print(inst)
+            traceback.print_exc()
             raise
 
     def process_notes(self, options):
