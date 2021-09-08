@@ -110,7 +110,8 @@ class UamtBot:
         else:
             user_id = self.user['user']['id']
         notes = self.store.get(key=user_id)
-        if not notes:
+        notes = (notes['notes'] if 'notes' in notes else []) if notes else []
+        if len(notes) == 0:
             if user_id == self.user['user']['id']:
                 self.post_response("You have no notes. Did you forget already?")
             else:
@@ -120,8 +121,8 @@ class UamtBot:
                 text = 'Your notes:\r\n'
             else:
                 text = '<@' + user_id + ">'s notes:\r\n"
-            for i in range(len(notes['notes'])):
-                text += '#' + str(i + 1) + ' => `' + notes['notes'][i] + '`\r\n'
+            for i in range(len(notes)):
+                text += '#' + str(i + 1) + ' => `' + notes[i] + '`\r\n'
             self.post_response(text)
 
     def get_user(self, user):
