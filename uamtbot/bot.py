@@ -23,7 +23,7 @@ class UamtBot:
                     'value') + "** yet. Ask <@412352063125717002> to fix this!")
                 return
             elif command == 'post':
-                if user.get('id') == '412352063125717002':
+                if user.get('user').get('id') == '412352063125717002':
                     self.post_response("Bots dispatched...")
                     time.sleep(10)
                     self.post_to_channel(options)
