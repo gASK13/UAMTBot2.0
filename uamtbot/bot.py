@@ -4,7 +4,7 @@ import os
 import discord
 from .poster.poster import Poster
 from .dynastore.dynastore import DynaStore
-from datetime import date
+from datetime import datetime
 
 
 class UamtBot:
