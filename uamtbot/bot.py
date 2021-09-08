@@ -130,14 +130,14 @@ class UamtBot:
 
     def handle_age(self, resolved):
         for user_id in resolved['users'].keys():
-            if user_id in resolved['members']:
-                join = datetime.fromisoformat(resolved['members'][user_id]['joined_at'])
-                delta = datetime.now(join.tzinfo) - join
-                self.post_response("<@" + user_id + "> has been a member of this server for " + str(delta.days) + " days.")
-                return
-            else:
-                self.post_response(resolved["users"][user_id]["username"] + " is no longer with us....")
-                return
+            if 'members' in resolved:
+                if user_id in resolved['members']:
+                    join = datetime.fromisoformat(resolved['members'][user_id]['joined_at'])
+                    delta = datetime.now(join.tzinfo) - join
+                    self.post_response("<@" + user_id + "> has been a member of this server for " + str(delta.days) + " days.")
+                    return
+            self.post_response(resolved["users"][user_id]["username"] + " is no longer with us....")
+            return
         self.post_response("..... I'm not sure what I am supposed to do?")
 
     def get_user(self, user):
