@@ -4,6 +4,7 @@ import os
 import discord
 from .poster.poster import Poster
 from .dynastore.dynastore import DynaStore
+from datetime import date
 
 
 class UamtBot:
@@ -17,22 +18,24 @@ class UamtBot:
         try:
             self.user = user
             self.token = token
-            if command == 'notes':
-                self.process_notes(options)
+            if command == 'Age':
+                self.handle_age(options.get('resolved'))
+            elif command == 'notes':
+                self.process_notes(options.get('options'))
             elif command == 'slap':
-                self.post_response("Sorry, " + self.get_user(user) + ", can't slap **" + options[0].get(
+                self.post_response("Sorry, " + self.get_user(user) + ", can't slap **" + options.get('options')[0].get(
                     'value') + "** yet. Ask <@412352063125717002> to fix this!")
                 return
             elif command == 'post':
                 if user.get('user').get('id') == '412352063125717002':
                     self.post_response("Bots dispatched...")
                     time.sleep(10)
-                    self.post_to_channel(options)
+                    self.post_to_channel(options.get('options'))
                     self.post_response("Bots have delivered their payload.")
                 else:
                     self.post_response("Sorry, Dave, I cannot do that.")
             elif command == 'sleep':
-                dur = options[0].get('value')
+                dur = options.get('options')[0].get('value')
                 if dur > 20 or dur < 0:
                     self.post_response("Sorry. Can't sleep that long, maximum 20 seconds....")
                     return
@@ -124,6 +127,18 @@ class UamtBot:
             for i in range(len(notes)):
                 text += '#' + str(i + 1) + ' => `' + notes[i] + '`\r\n'
             self.post_response(text)
+
+    def handle_age(self, resolved):
+        for user_id in resolved['users'].keys():
+            if user_id in resolved['members']:
+                join = datetime.fromisoformat(resolved['members'][user_id]['joined_at'])
+                delta = datetime.now(a.tzinfo) - join
+                self.post_response("<@" + user_id + "> has been a member of this server for " + str(delta.days) + " days.")
+                return
+            else:
+                self.post_response(resolved["users"][user_id]["username"] + " is no longer with us....")
+                return
+        self.post_response("..... I'm not sure what I am supposed to do?")
 
     def get_user(self, user):
         if user is not None:

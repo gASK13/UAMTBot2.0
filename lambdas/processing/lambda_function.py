@@ -8,7 +8,7 @@ def lambda_handler(event, context):
     # get body
     body = event.get('body-json')
     command = body.get('data').get('name')
-    options = body.get('data').get('options')
+    options = body.get('data')
     user = body.get('member')
     token = body.get('token')
     try:
