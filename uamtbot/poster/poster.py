@@ -9,7 +9,7 @@ class Poster:
         pass
 
     def patch(self, url, json):
-        requests.patch(url=url, json=json, headers=authConfig)
+        return requests.patch(url=url, json=json, headers=authConfig)
 
     def post(self, url, json):
-        requests.post(url=url, json=json, headers=authConfig)
+        return requests.post(url=url, json=json, headers=authConfig)
