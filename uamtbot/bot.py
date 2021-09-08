@@ -132,7 +132,7 @@ class UamtBot:
         for user_id in resolved['users'].keys():
             if user_id in resolved['members']:
                 join = datetime.fromisoformat(resolved['members'][user_id]['joined_at'])
-                delta = datetime.now(a.tzinfo) - join
+                delta = datetime.now(join.tzinfo) - join
                 self.post_response("<@" + user_id + "> has been a member of this server for " + str(delta.days) + " days.")
                 return
             else:
