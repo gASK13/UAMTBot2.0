@@ -10,5 +10,7 @@ def lambda_handler(event, context):
     options = body.get('data').get('options')
     user = body.get('member')
     token = body.get('token')
-
-    UamtBot().handle_command(command, options, user, token)
+    try:
+        UamtBot().handle_command(command, options, user, token)
+    except Exception as inst:
+        pass  # this got logged above, so we just need make sure we return correctly
