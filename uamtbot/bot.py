@@ -153,5 +153,5 @@ class UamtBot:
                     "users": [options[2].get('value')]
                 }
             })
-        print(r)
-        print(r.json())
+        print(str(r))
+        print(str(r.json()))
