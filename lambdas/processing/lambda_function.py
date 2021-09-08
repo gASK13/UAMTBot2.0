@@ -14,4 +14,4 @@ def lambda_handler(event, context):
     try:
         UamtBot().handle_command(command, options, user, token)
     except Exception:
-        traceback.print_exc()
+        print(traceback.format_exc())

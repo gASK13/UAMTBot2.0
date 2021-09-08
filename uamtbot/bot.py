@@ -46,7 +46,7 @@ class UamtBot:
                 return
         except Exception:
             self.post_response("Something went wrong. I can feel it...")
-            traceback.print_exc()
+            print(traceback.format_exc())
             raise
 
     def process_notes(self, options):
