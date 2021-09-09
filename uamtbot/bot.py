@@ -133,7 +133,7 @@ class UamtBot:
     def handle_length(self, resolved):
         for message in resolved['messages'].keys():
             msg = resolved['messages'][message]
-            self.post_response("The message has " + str(len(msg['content'])) + "characters.", True)
+            self.post_response_ephemereal("The message has " + str(len(msg['content'])) + "characters.")
             return
         self.post_response("..... I'm not sure what I am supposed to do?", True)
 
@@ -158,7 +158,7 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content, ephemeral=False):
+    def post_response(self, content):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
         self.poster.patch(
             url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original",
@@ -166,8 +166,21 @@ class UamtBot:
                 "content": content,
                 "allowed_mentions": {
                     "parse": []
+                }
+            })
+
+    def post_response_ephemereal(self, content):
+        # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
+        self.poster.delete(
+            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original")
+        self.poster.post(
+            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "",
+            json={
+                "content": content,
+                "allowed_mentions": {
+                    "parse": []
                 },
-                "flags": (1 << 6) if ephemeral else 0
+                "flags": (1 << 6)
             })
 
     def post_to_channel(self, options):

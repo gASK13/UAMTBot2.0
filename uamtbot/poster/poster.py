@@ -13,3 +13,6 @@ class Poster:
 
     def post(self, url, json):
         return requests.post(url=url, json=json, headers=authConfig)
+
+    def delete(self, url):
+        return requests.delete(url=url, headers=authConfig)
