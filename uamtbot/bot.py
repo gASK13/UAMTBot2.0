@@ -20,6 +20,8 @@ class UamtBot:
             self.token = token
             if command == 'Age':
                 self.handle_age(options.get('resolved'))
+            elif command == 'Length':
+                self.handle_length(options.get('resolved'))
             elif command == 'notes':
                 self.process_notes(options.get('options'))
             elif command == 'slap':
@@ -128,13 +130,21 @@ class UamtBot:
                 text += '#' + str(i + 1) + ' => `' + notes[i] + '`\r\n'
             self.post_response(text)
 
+    def handle_length(self):
+        for message in resolved['messages'].keys():
+            msg = resolved['messages'][message]
+            self.post_response("The message has " + len(msg['content']) + "characters.", True)
+            return
+        self.post_response("..... I'm not sure what I am supposed to do?", True)
+
     def handle_age(self, resolved):
         for user_id in resolved['users'].keys():
             if 'members' in resolved:
                 if user_id in resolved['members']:
                     join = datetime.fromisoformat(resolved['members'][user_id]['joined_at'])
                     delta = datetime.now(join.tzinfo) - join
-                    self.post_response("<@" + user_id + "> has been a member of this server for " + str(delta.days) + " days.")
+                    self.post_response(
+                        "<@" + user_id + "> has been a member of this server for " + str(delta.days) + " days.")
                     return
             self.post_response(resolved["users"][user_id]["username"] + " is no longer with us....")
             return
@@ -148,7 +158,7 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content):
+    def post_response(self, content, ephemeral=False):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
         self.poster.patch(
             url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original",
@@ -156,7 +166,8 @@ class UamtBot:
                 "content": content,
                 "allowed_mentions": {
                     "parse": []
-                }
+                },
+                "flags": (1 << 6) if ephemeral else 0
             })
 
     def post_to_channel(self, options):
