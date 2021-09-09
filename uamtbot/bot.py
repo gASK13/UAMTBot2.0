@@ -133,7 +133,7 @@ class UamtBot:
     def handle_length(self, resolved):
         for message in resolved['messages'].keys():
             msg = resolved['messages'][message]
-            self.post_response("The message has " + len(msg['content']) + "characters.", True)
+            self.post_response("The message has " + str(len(msg['content'])) + "characters.", True)
             return
         self.post_response("..... I'm not sure what I am supposed to do?", True)
 
