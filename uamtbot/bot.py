@@ -130,7 +130,7 @@ class UamtBot:
                 text += '#' + str(i + 1) + ' => `' + notes[i] + '`\r\n'
             self.post_response(text)
 
-    def handle_length(self):
+    def handle_length(self, resolved):
         for message in resolved['messages'].keys():
             msg = resolved['messages'][message]
             self.post_response("The message has " + len(msg['content']) + "characters.", True)
