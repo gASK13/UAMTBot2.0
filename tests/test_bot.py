@@ -15,7 +15,8 @@ class TestBotHandler(unittest.TestCase):
                                                  json={
                                                      'content': "Sorry, NICK, can't slap **test test** yet. Ask "
                                                                 "<@412352063125717002> to fix this!",
-                                                     'allowed_mentions': {'parse': []}})
+                                                     'allowed_mentions': {'parse': []},
+                                                     'flags': 0})
 
     def test_slap_no_nick(self):
         self.bot.handle_command('slap', {'options': [{'value': 'test test'}]},
@@ -24,7 +25,8 @@ class TestBotHandler(unittest.TestCase):
                                                  json={
                                                      'content': "Sorry, Name not found, can't slap **test test** yet. Ask "
                                                                 "<@412352063125717002> to fix this!",
-                                                     'allowed_mentions': {'parse': []}})
+                                                     'allowed_mentions': {'parse': []},
+                                                     'flags': 0})
 
     def test_slap_no_user(self):
         self.bot.handle_command('slap', {'options': [{'value': 'test test'}]}, {}, 'token')
@@ -32,4 +34,5 @@ class TestBotHandler(unittest.TestCase):
                                                  json={
                                                      'content': "Sorry, ?$#@, can't slap **test test** yet. Ask "
                                                                 "<@412352063125717002> to fix this!",
-                                                     'allowed_mentions': {'parse': []}})
+                                                     'allowed_mentions': {'parse': []},
+                                                     'flags': 0})
