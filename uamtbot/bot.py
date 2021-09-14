@@ -239,7 +239,7 @@ class UamtBot:
         print(r.json())
 
     def handle_interaction(self, options):
-        custom_id = options.get('data').get('custom_id')
+        custom_id = options.get('custom_id')
         if custom_id == 'delete':
             user_id = self.user['user']['id']
             self.store.delete(key=user_id)
