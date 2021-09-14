@@ -163,17 +163,19 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content, msgid="@original"):
+    def post_response(self, content, msgid="@original", clear=False):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
-        self.poster.patch(
-            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
-            json={
+        json = {
                 "content": content,
                 "allowed_mentions": {
                     "parse": []
-                },
-                "components": []
-            })
+                }
+            }
+        if clear:
+            json['components'] = []
+        self.poster.patch(
+            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
+            json=json)
 
     def post_action_response(self, content):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
