@@ -14,41 +14,49 @@ class UamtBot:
     def app_id(self):
         return os.environ['APP_ID'] if 'APP_ID' in os.environ else 'N/A'
 
-    def handle_command(self, command, options, user, token):
+
+    def handle_message(self, command, options):
+        if command == 'Age':
+            self.handle_age(options.get('resolved'))
+        elif command == 'Length':
+            self.handle_length(options.get('resolved'))
+        elif command == 'notes':
+            self.process_notes(options.get('options'))
+        elif command == 'slap':
+            self.post_response("Sorry, " + self.get_user(self.user) + ", can't slap **" + options.get('options')[0].get(
+                'value') + "** yet. Ask <@412352063125717002> to fix this!")
+            return
+        elif command == 'post':
+            if self.user.get('user').get('id') == '412352063125717002':
+                self.post_response("Bots dispatched...")
+                time.sleep(10)
+                self.post_to_channel(options.get('options'))
+                self.post_response("Bots have delivered their payload.")
+            else:
+                self.post_response("Sorry, Dave, I cannot do that.")
+        elif command == 'sleep':
+            dur = options.get('options')[0].get('value')
+            if dur > 20 or dur < 0:
+                self.post_response("Sorry. Can't sleep that long, maximum 20 seconds....")
+                return
+            for i in range(0, dur):
+                self.post_response("Sleeping for " + str(i) + " seconds...")
+                time.sleep(1)
+            self.post_response("I'm done now, " + self.get_user(self.user) + ", are you happy?")
+            return
+        else:
+            self.post_response("BORK BORK boooooork .... ")
+            return
+
+    def handle_command(self, type, options, user, token):
         try:
             self.user = user
             self.token = token
-            if command == 'Age':
-                self.handle_age(options.get('resolved'))
-            elif command == 'Length':
-                self.handle_length(options.get('resolved'))
-            elif command == 'notes':
-                self.process_notes(options.get('options'))
-            elif command == 'slap':
-                self.post_response("Sorry, " + self.get_user(user) + ", can't slap **" + options.get('options')[0].get(
-                    'value') + "** yet. Ask <@412352063125717002> to fix this!")
-                return
-            elif command == 'post':
-                if user.get('user').get('id') == '412352063125717002':
-                    self.post_response("Bots dispatched...")
-                    time.sleep(10)
-                    self.post_to_channel(options.get('options'))
-                    self.post_response("Bots have delivered their payload.")
-                else:
-                    self.post_response("Sorry, Dave, I cannot do that.")
-            elif command == 'sleep':
-                dur = options.get('options')[0].get('value')
-                if dur > 20 or dur < 0:
-                    self.post_response("Sorry. Can't sleep that long, maximum 20 seconds....")
-                    return
-                for i in range(0, dur):
-                    self.post_response("Sleeping for " + str(i) + " seconds...")
-                    time.sleep(1)
-                self.post_response("I'm done now, " + self.get_user(user) + ", are you happy?")
-                return
-            else:
-                self.post_response("BORK BORK boooooork .... ")
-                return
+            if type == 2:
+                self.handle_message(options.get('name'), options)
+            elif type == 3:
+                self.handle_interaction(options)
+
         except Exception:
             self.post_response("Something went wrong. I can feel it...")
             print(traceback.format_exc())
@@ -229,3 +237,14 @@ class UamtBot:
             })
         print(r)
         print(r.json())
+
+    def handle_interaction(self, options):
+        custom_id = options.get('data').get('custom_id')
+        if custom_id == 'delete':
+            user_id = self.user['user']['id']
+            self.store.delete(key=user_id)
+            self.post_response("Deleting! Yay!")
+        elif custom_id == 'keep':
+            self.post_response("Ok, that's good decision.")
+        else:
+            self.post_response("....huh?")

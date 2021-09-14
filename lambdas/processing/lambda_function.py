@@ -7,11 +7,11 @@ def lambda_handler(event, context):
 
     # get body
     body = event.get('body-json')
-    command = body.get('data').get('name')
+    type = body.get('type')
     options = body.get('data')
     user = body.get('member')
     token = body.get('token')
     try:
-        UamtBot().handle_command(command, options, user, token)
+        UamtBot().handle_command(type, options, user, token)
     except Exception:
         print(traceback.format_exc())
