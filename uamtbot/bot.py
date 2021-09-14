@@ -171,7 +171,8 @@ class UamtBot:
                 "content": content,
                 "allowed_mentions": {
                     "parse": []
-                }
+                },
+                "components": []
             })
 
     def post_action_response(self, content):
