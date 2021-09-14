@@ -239,7 +239,10 @@ class UamtBot:
 
     def disable_components(self, components):
         for c in components:
-            c['disabled'] = True
+            if c['type'] == 1:
+                self.disable_components(c['components'])
+            else:
+                c['disabled'] = True
         return components
 
     def handle_interaction_inner(self, options, message):
