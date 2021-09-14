@@ -107,7 +107,7 @@ class UamtBot:
         self.post_response('`' + removed + '` was not a good one anyway....')
 
     def clear_notes(self):
-        self.post_response("Not implemented yet. Sorry.")
+        self.post_action_response("Do you really want to clear all your notes?")
 
     def list_notes(self, options):
         if len(options) == 1:
@@ -167,6 +167,41 @@ class UamtBot:
                 "allowed_mentions": {
                     "parse": []
                 }
+            })
+
+    def post_action_response(self, content):
+        # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
+        self.poster.patch(
+            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original",
+            json={
+                "content": content,
+                "allowed_mentions": {
+                    "parse": []
+                },
+                "components": [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "Delete",
+                                "style": 4,
+                                "custom_id": "delete",
+                                "emoji": {
+                                    "name": "rip",
+                                    "id": "512360112820584448"
+                                }
+                            },
+                            {
+                                "type": 2,
+                                "label": "I changed my mind",
+                                "style": 2,
+                                "custom_id": "keep"
+                            }
+                        ]
+
+                    }
+                ]
             })
 
     def post_response_ephemereal(self, content):
