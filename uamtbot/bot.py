@@ -256,9 +256,9 @@ class UamtBot:
         if custom_id == 'delete':
             self.post_response("Deleted! Hope you did not make a mistake...")
             self.store.delete(key=user_id)
-            self.post_response("XXX", msgid=message.get('id'), components=self.disable_components(message['components']))
+            self.post_response(message.get('content'), msgid=message.get('id'), components=self.disable_components(message['components']))
         elif custom_id == 'keep':
             self.post_response("Ok, that's good decision.")
-            self.post_response("XXX", msgid=message.get('id'), components=self.disable_components(message['components']))
+            self.post_response(message.get('content'), msgid=message.get('id'), components=self.disable_components(message['components']))
         else:
             self.post_response("....huh?")
