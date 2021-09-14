@@ -112,7 +112,31 @@ class UamtBot:
         self.post_response('`' + removed + '` was not a good one anyway....')
 
     def clear_notes(self):
-        self.post_action_response("Do you really want to clear all your notes?")
+        components = [
+                    {
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "Delete",
+                                "style": 4,
+                                "custom_id": "delete",
+                                "emoji": {
+                                    "name": "rip",
+                                    "id": "512360112820584448"
+                                }
+                            },
+                            {
+                                "type": 2,
+                                "label": "I changed my mind",
+                                "style": 2,
+                                "custom_id": "keep"
+                            }
+                        ]
+
+                    }
+                ]
+        self.post_response("Do you really want to clear all your notes?", components=components)
 
     def list_notes(self, options):
         if len(options) == 1:
@@ -163,7 +187,7 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content, msgid="@original", clear=False):
+    def post_response(self, content, msgid="@original", components=None):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
         json = {
                 "content": content,
@@ -171,46 +195,11 @@ class UamtBot:
                     "parse": []
                 }
             }
-        if clear:
-            json['components'] = []
+        if components:
+            json['components'] = components
         self.poster.patch(
             url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
             json=json)
-
-    def post_action_response(self, content):
-        # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
-        self.poster.patch(
-            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original",
-            json={
-                "content": content,
-                "allowed_mentions": {
-                    "parse": []
-                },
-                "components": [
-                    {
-                        "type": 1,
-                        "components": [
-                            {
-                                "type": 2,
-                                "label": "Delete",
-                                "style": 4,
-                                "custom_id": "delete",
-                                "emoji": {
-                                    "name": "rip",
-                                    "id": "512360112820584448"
-                                }
-                            },
-                            {
-                                "type": 2,
-                                "label": "I changed my mind",
-                                "style": 2,
-                                "custom_id": "keep"
-                            }
-                        ]
-
-                    }
-                ]
-            })
 
     def post_response_ephemereal(self, content):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
@@ -249,6 +238,11 @@ class UamtBot:
             print(traceback.format_exc())
             raise
 
+    def disable_components(self, components):
+        for c in components:
+            c['disabled'] = True
+        return components
+
     def handle_interaction_inner(self, options, message):
         self.store = DynaStore(tableName='notes')
         user_id = self.user['user']['id']
@@ -260,9 +254,9 @@ class UamtBot:
         if custom_id == 'delete':
             self.post_response("Deleted! Hope you did not make a mistake...")
             self.store.delete(key=user_id)
-            self.post_response("XXX", msgid=message.get('id'), True)
+            self.post_response("XXX", msgid=message.get('id'), components=self.disable_components(message['components']))
         elif custom_id == 'keep':
             self.post_response("Ok, that's good decision.")
-            self.post_response("XXX", msgid=message.get('id'), True)
+            self.post_response("XXX", msgid=message.get('id'), components=self.disable_components(message['components']))
         else:
             self.post_response("....huh?")
