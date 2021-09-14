@@ -235,7 +235,18 @@ class UamtBot:
         print(r)
         print(r.json())
 
-    def handle_interaction(self, options, message):
+    def handle_interaction(self, options, message, user, token):
+        try:
+            self.user = user
+            self.token = token
+            self.handle_interaction_inner(options, message)
+
+        except Exception:
+            self.post_response("Something went wrong. I can feel it...")
+            print(traceback.format_exc())
+            raise
+
+    def handle_interaction_inner(self, options, message):
         self.store = DynaStore(tableName='notes')
         user_id = self.user['user']['id']
         author_id = message.get('interaction').get('user').get('id')

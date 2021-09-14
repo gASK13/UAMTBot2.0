@@ -15,6 +15,6 @@ def lambda_handler(event, context):
         if type == 2:
             UamtBot().handle_command(type, options, user, token)
         elif type == 3:
-            UamtBot().handle_interaction(options, body.get('message'))
+            UamtBot().handle_interaction(options, body.get('message'), user, token)
     except Exception:
         print(traceback.format_exc())
