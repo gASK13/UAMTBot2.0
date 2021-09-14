@@ -14,7 +14,6 @@ class UamtBot:
     def app_id(self):
         return os.environ['APP_ID'] if 'APP_ID' in os.environ else 'N/A'
 
-
     def handle_message(self, command, options):
         if command == 'Age':
             self.handle_age(options.get('resolved'))

@@ -9,10 +9,15 @@ class Poster:
         pass
 
     def patch(self, url, json):
+        print("PATCH to " + url)
+        print(str(json))
         return requests.patch(url=url, json=json, headers=authConfig)
 
     def post(self, url, json):
+        print("POST to " + url)
+        print(str(json))
         return requests.post(url=url, json=json, headers=authConfig)
 
     def delete(self, url):
+        print("DELETE to " + url)
         return requests.delete(url=url, headers=authConfig)
