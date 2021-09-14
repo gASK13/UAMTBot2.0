@@ -52,10 +52,7 @@ class UamtBot:
         try:
             self.user = user
             self.token = token
-            if type == 2:
-                self.handle_message(options.get('name'), options)
-            elif type == 3:
-                self.handle_interaction(options)
+            self.handle_message(options.get('name'), options)
 
         except Exception:
             self.post_response("Something went wrong. I can feel it...")
@@ -166,10 +163,10 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content):
+    def post_response(self, content, msgid="@original"):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
         self.poster.patch(
-            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original",
+            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
             json={
                 "content": content,
                 "allowed_mentions": {
@@ -238,13 +235,20 @@ class UamtBot:
         print(r)
         print(r.json())
 
-    def handle_interaction(self, options):
+    def handle_interaction(self, options, message):
+        self.store = DynaStore(tableName='notes')
+        user_id = self.user['user']['id']
+        author_id = message.get('interaction').get('user').get('id')
+        if author_id != user_id:
+            self.post_response("Sorry, only <@" + author_id + "> can click on my buttons.")
+            return
         custom_id = options.get('custom_id')
         if custom_id == 'delete':
-            user_id = self.user['user']['id']
+            self.post_response("Deleted! Hope you did not make a mistake...")
             self.store.delete(key=user_id)
-            self.post_response("Deleting! Yay!")
+            self.post_response("XXX", msgid=message.get('id'))
         elif custom_id == 'keep':
             self.post_response("Ok, that's good decision.")
+            self.post_response("XXX", msgid=message.get('id'))
         else:
             self.post_response("....huh?")
