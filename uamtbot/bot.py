@@ -200,10 +200,12 @@ class UamtBot:
             url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
             json=json)
 
-    def post_response_ephemereal(self, content):
+    def post_response_ephemereal(self, content, delete=True):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
-        self.poster.delete(
-            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original")
+        if delete:
+            self.poster.delete(
+                url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original")
+
         self.poster.post(
             url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "",
             json={
@@ -250,15 +252,13 @@ class UamtBot:
         user_id = self.user['user']['id']
         author_id = message.get('interaction').get('user').get('id')
         if author_id != user_id:
-            self.post_response("Sorry, only <@" + author_id + "> can click on my buttons.")
+            self.post_response_ephemereal("Sorry, only <@" + author_id + "> can click on my buttons.", delete=False)
             return
         custom_id = options.get('custom_id')
         if custom_id == 'delete':
-            self.post_response("Deleted! Hope you did not make a mistake...")
             self.store.delete(key=user_id)
             self.post_response(message.get('content'), msgid=message.get('id'), components=self.disable_components(message['components']))
         elif custom_id == 'keep':
-            self.post_response("Ok, that's good decision.")
             self.post_response(message.get('content'), msgid=message.get('id'), components=self.disable_components(message['components']))
         else:
-            self.post_response("....huh?")
+            self.post_response_ephemereal("Sorry, only <@" + author_id + "> can click on my buttons.", delete=False)
