@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+import time
 
 from nacl.signing import VerifyKey
 
@@ -69,6 +70,8 @@ def lambda_handler(event, context):
         raise Exception(f"[UNAUTHORIZED] Invalid request type: {body.get('type')}!")
 
     process = REQUEST_RESPONSES[body.get("type")]
+
+    time.sleep(5)
 
     # process in new lambda (cause timeout)
     if process["process"]:
