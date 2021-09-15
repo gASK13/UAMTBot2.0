@@ -64,6 +64,7 @@ def lambda_handler(event, context):
         raise Exception(f"[UNAUTHORIZED] Invalid request signature: {e}")
 
     # check type
+    body = event.get('body-json')
     if body.get("type") not in REQUEST_RESPONSES:
         raise Exception(f"[UNAUTHORIZED] Invalid request type: {body.get('type')}!")
 
