@@ -11,7 +11,7 @@ class TestBotHandler(unittest.TestCase):
 
     def test_slap_w_nick(self):
         self.bot.handle_command(2, {'name': 'slap', 'options': [{'value': 'test test'}]}, {'nick': 'NICK'}, 'token')
-        self.bot.poster.patch.assert_called_with(url='https://discord.com/api/v8/webhooks/N/A/token/messages/@original',
+        self.bot.poster.patch.assert_called_with(url='https://discord.com/api/v9/webhooks/N/A/token/messages/@original',
                                                  json={
                                                      'content': "Sorry, NICK, can't slap **test test** yet. Ask "
                                                                 "<@412352063125717002> to fix this!",
@@ -20,7 +20,7 @@ class TestBotHandler(unittest.TestCase):
     def test_slap_no_nick(self):
         self.bot.handle_command(2, {'name': 'slap', 'options': [{'value': 'test test'}]},
                                 {'nick': None, 'user': {'username': 'Name not found'}}, 'token')
-        self.bot.poster.patch.assert_called_with(url='https://discord.com/api/v8/webhooks/N/A/token/messages/@original',
+        self.bot.poster.patch.assert_called_with(url='https://discord.com/api/v9/webhooks/N/A/token/messages/@original',
                                                  json={
                                                      'content': "Sorry, Name not found, can't slap **test test** yet. Ask "
                                                                 "<@412352063125717002> to fix this!",
@@ -28,7 +28,7 @@ class TestBotHandler(unittest.TestCase):
 
     def test_slap_no_user(self):
         self.bot.handle_command(2, {'name': 'slap', 'options': [{'value': 'test test'}]}, {}, 'token')
-        self.bot.poster.patch.assert_called_with(url='https://discord.com/api/v8/webhooks/N/A/token/messages/@original',
+        self.bot.poster.patch.assert_called_with(url='https://discord.com/api/v9/webhooks/N/A/token/messages/@original',
                                                  json={
                                                      'content': "Sorry, ?$#@, can't slap **test test** yet. Ask "
                                                                 "<@412352063125717002> to fix this!",

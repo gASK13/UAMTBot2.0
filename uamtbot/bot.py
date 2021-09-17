@@ -197,17 +197,17 @@ class UamtBot:
         if components:
             json['components'] = components
         self.poster.patch(
-            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
+            url='https://discord.com/api/v9/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
             json=json)
 
     def post_response_ephemereal(self, content, delete=True):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
         if delete:
             self.poster.delete(
-                url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original")
+                url='https://discord.com/api/v9/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original")
 
         self.poster.post(
-            url='https://discord.com/api/v8/webhooks/' + self.app_id() + '/' + self.token + "",
+            url='https://discord.com/api/v9/webhooks/' + self.app_id() + '/' + self.token + "",
             json={
                 "content": content,
                 "allowed_mentions": {
@@ -218,7 +218,7 @@ class UamtBot:
 
     def post_to_channel(self, options):
         r = self.poster.post(
-            url='https://discord.com/api/v8/channels/' + options[0].get('value') + '/messages',
+            url='https://discord.com/api/v9/channels/' + options[0].get('value') + '/messages',
             json={
                 "content": options[1].get('value'),
                 "allowed_mentions": {
