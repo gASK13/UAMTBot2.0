@@ -22,6 +22,7 @@ class UamtBot:
         elif command == 'notes':
             self.process_notes(options.get('options'))
         elif command == 'slap':
+            time.sleep(5)
             self.post_response("Sorry, " + self.get_user(self.user) + ", can't slap **" + options.get('options')[0].get(
                 'value') + "** yet. Ask <@412352063125717002> to fix this!")
             return
