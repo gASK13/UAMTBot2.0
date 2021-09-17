@@ -186,14 +186,12 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content, msgid="@original", components=None):
+    def post_response(self, content=None, msgid="@original", components=None):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
-        json = {
-                "content": content,
-                "allowed_mentions": {
-                    "parse": []
-                }
-            }
+        json = {}
+        if content:
+            json["content"] = content
+            json["allowed_mentions"]: { "parse": [] }
         if components:
             json['components'] = components
         self.poster.patch(
