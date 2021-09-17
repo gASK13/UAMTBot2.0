@@ -152,12 +152,13 @@ class UamtBot:
                 self.post_response("<@" + user_id + "> has no notes. Ask him to add some maybe?")
         else:
             if user_id == self.user['user']['id']:
-                text = 'Your notes:\r\n'
+                text = 'Your notes:'
             else:
-                text = '<@' + user_id + ">'s notes:\r\n"
+                text = '<@' + user_id + ">'s notes:"
+            embed = discord.Embed(title=text, color=0x00ff00)
             for i in range(len(notes)):
-                text += '#' + str(i + 1) + ' => `' + notes[i] + '`\r\n'
-            self.post_response(text)
+                embed.add_field(name="#" + str(i+1), value=notes[i], inline=False)
+            self.post_response(embeds=[embed])
 
     def handle_length(self, resolved):
         for message in resolved['messages'].keys():
@@ -187,7 +188,7 @@ class UamtBot:
                 return user.get('user').get('username')
         return '?$#@'
 
-    def post_response(self, content=None, msgid="@original", components=None):
+    def post_response(self, content=None, msgid="@original", components=None, embeds=None):
         # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
         json = {}
         if content:
@@ -195,6 +196,8 @@ class UamtBot:
             json["allowed_mentions"] = {"parse": []}
         if components:
             json['components'] = components
+        if embeds:
+            json['embeds'] = embeds
         self.poster.patch(
             url='https://discord.com/api/v9/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
             json=json)

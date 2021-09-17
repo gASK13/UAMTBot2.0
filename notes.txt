@@ -2,3 +2,8 @@
 - editing messages content shows edited
     - editing components does NOT
 - cannot change ephemeral / non-eph
+
+INTERACTION will have to have logic
+    - determine ephemereal / non-epehemeral on action
+    - determine if component interaction is "allowed or not" and disable buttons accordingly
+        - with a "loading state on the clicked button!!!"
