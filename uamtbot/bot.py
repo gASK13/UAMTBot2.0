@@ -145,7 +145,7 @@ class UamtBot:
             user_avatar = resolved["users"][user_id]['avatar']
         else:
             user_id = self.user['user']['id']
-            user_name = self.get_user(self, self.user)
+            user_name = self.get_user(self.user)
             user_avatar = self.user['user']['avatar']
         notes = self.store.get(key=user_id)
         notes = (notes['notes'] if 'notes' in notes else []) if notes else []
@@ -156,9 +156,9 @@ class UamtBot:
                 self.post_response("<@" + user_id + "> has no notes. Ask him to add some maybe?")
         else:
             embed = discord.Embed(title=user_name + "'s notes:", color=0x00ff00)
-            embed.set_author(name='xxx',icon_url='https://cdn.discordapp.com/avatars/' + str(user_id) + '/' + user_avatar + '.png?size=64')
+            embed.set_author(name=user_name,icon_url='https://cdn.discordapp.com/avatars/' + str(user_id) + '/' + user_avatar + '.png?size=64')
             for i in range(len(notes)):
-                embed.add_field(name="#" + str(i+1), value=notes[i], inline=True)
+                embed.add_field(name="#" + str(i+1), value=notes[i], inline=False)
             self.post_response(embeds=[embed.to_dict()])
 
     def handle_length(self, resolved):
