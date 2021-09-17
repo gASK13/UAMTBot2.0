@@ -36,7 +36,8 @@ REQUEST_RESPONSES = {
     },
     3: {
         "response": {
-            "type": RESPONSE_TYPES['DEFERRED_UPDATE_MESSAGE']
+            "type": RESPONSE_TYPES['DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE'],
+            "flags": (1 << 6)
         },
         "process": True,
         "name": "MESSAGE_COMPONENT"
