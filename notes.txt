@@ -1,0 +1,4 @@
+- interactions show loading until response is sent (even if DEFERRED)
+- editing messages content shows edited
+    - editing components does NOT
+- cannot change ephemeral / non-eph

@@ -258,6 +258,7 @@ class UamtBot:
             self.post_response(msgid=message.get('id'),
                                components=self.disable_components(message['components']))
         elif custom_id == 'keep':
+            time.sleep(5)
             self.post_response(msgid=message.get('id'),
                                components=self.disable_components(message['components']))
         else:
