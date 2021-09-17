@@ -20,7 +20,7 @@ class UamtBot:
         elif command == 'Length':
             self.handle_length(options.get('resolved'))
         elif command == 'notes':
-            self.process_notes(options.get('options'))
+            self.process_notes(options.get('options'), options.get('resolved'))
         elif command == 'slap':
             time.sleep(5)
             self.post_response("Sorry, " + self.get_user(self.user) + ", can't slap **" + options.get('options')[0].get(
@@ -59,12 +59,12 @@ class UamtBot:
             print(traceback.format_exc())
             raise
 
-    def process_notes(self, options):
+    def process_notes(self, options, resolved):
         self.store = DynaStore(tableName='notes')
         subcommand = options[0]['name']
         suboptions = options[0]['options'] if 'options' in options[0] else {}
         if subcommand == 'list':
-            self.list_notes(suboptions)
+            self.list_notes(suboptions, resolved)
         elif subcommand == 'add':
             self.add_note(suboptions)
         elif subcommand == 'remove':
@@ -138,11 +138,15 @@ class UamtBot:
         ]
         self.post_response("Do you really want to clear all your notes?", components=components)
 
-    def list_notes(self, options):
+    def list_notes(self, options, resolved):
         if len(options) == 1:
             user_id = options[0]['value']
+            user_name = resolved["members"][user_id]['nick'] if resolved["members"][user_id]['nick'] is not None else resolved["users"][user_id]['username']
+            user_avatar = resolved["users"][user_id]['avatar']
         else:
             user_id = self.user['user']['id']
+            user_name = self.get_user(self, self.user)
+            user_avatar = self.user['user']['avatar']
         notes = self.store.get(key=user_id)
         notes = (notes['notes'] if 'notes' in notes else []) if notes else []
         if len(notes) == 0:
@@ -151,13 +155,10 @@ class UamtBot:
             else:
                 self.post_response("<@" + user_id + "> has no notes. Ask him to add some maybe?")
         else:
-            if user_id == self.user['user']['id']:
-                text = 'Your notes:'
-            else:
-                text = '<@' + user_id + ">'s notes:"
-            embed = discord.Embed(title=text, color=0x00ff00)
+            embed = discord.Embed(title=user_name + "'s notes:", color=0x00ff00)
+            embed.set_author(name='xxx',icon_url='https://cdn.discordapp.com/avatars/' + str(user_id) + '/' + user_avatar + '.png?size=64')
             for i in range(len(notes)):
-                embed.add_field(name="#" + str(i+1), value=notes[i], inline=False)
+                embed.add_field(name="#" + str(i+1), value=notes[i], inline=True)
             self.post_response(embeds=[embed.to_dict()])
 
     def handle_length(self, resolved):
