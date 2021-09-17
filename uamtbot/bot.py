@@ -112,29 +112,29 @@ class UamtBot:
 
     def clear_notes(self):
         components = [
+            {
+                "type": 1,
+                "components": [
                     {
-                        "type": 1,
-                        "components": [
-                            {
-                                "type": 2,
-                                "label": "Delete",
-                                "style": 4,
-                                "custom_id": "delete",
-                                "emoji": {
-                                    "name": "rip",
-                                    "id": "512360112820584448"
-                                }
-                            },
-                            {
-                                "type": 2,
-                                "label": "I changed my mind",
-                                "style": 2,
-                                "custom_id": "keep"
-                            }
-                        ]
-
+                        "type": 2,
+                        "label": "Delete",
+                        "style": 4,
+                        "custom_id": "delete",
+                        "emoji": {
+                            "name": "rip",
+                            "id": "512360112820584448"
+                        }
+                    },
+                    {
+                        "type": 2,
+                        "label": "I changed my mind",
+                        "style": 2,
+                        "custom_id": "keep"
                     }
                 ]
+
+            }
+        ]
         self.post_response("Do you really want to clear all your notes?", components=components)
 
     def list_notes(self, options):
@@ -191,7 +191,7 @@ class UamtBot:
         json = {}
         if content:
             json["content"] = content
-            json["allowed_mentions"]: { "parse": [] }
+            json["allowed_mentions"] = {"parse": []}
         if components:
             json['components'] = components
         self.poster.patch(
@@ -255,8 +255,10 @@ class UamtBot:
         custom_id = options.get('custom_id')
         if custom_id == 'delete':
             self.store.delete(key=user_id)
-            self.post_response(message.get('content'), msgid=message.get('id'), components=self.disable_components(message['components']))
+            self.post_response(message.get('content'), msgid=message.get('id'),
+                               components=self.disable_components(message['components']))
         elif custom_id == 'keep':
-            self.post_response(message.get('content'), msgid=message.get('id'), components=self.disable_components(message['components']))
+            self.post_response(message.get('content'), msgid=message.get('id'),
+                               components=self.disable_components(message['components']))
         else:
             self.post_response_ephemereal("Sorry, only <@" + author_id + "> can click on my buttons.", delete=False)
