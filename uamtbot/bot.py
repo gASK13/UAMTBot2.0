@@ -255,10 +255,10 @@ class UamtBot:
         custom_id = options.get('custom_id')
         if custom_id == 'delete':
             self.store.delete(key=user_id)
-            self.post_response(message.get('content'), msgid=message.get('id'),
+            self.post_response(msgid=message.get('id'),
                                components=self.disable_components(message['components']))
         elif custom_id == 'keep':
-            self.post_response(message.get('content'), msgid=message.get('id'),
+            self.post_response(msgid=message.get('id'),
                                components=self.disable_components(message['components']))
         else:
             self.post_response_ephemereal("Sorry, only <@" + author_id + "> can click on my buttons.", delete=False)
