@@ -158,7 +158,7 @@ class UamtBot:
             embed = discord.Embed(title=text, color=0x00ff00)
             for i in range(len(notes)):
                 embed.add_field(name="#" + str(i+1), value=notes[i], inline=False)
-            self.post_response(embeds=[embed])
+            self.post_response(embeds=[embed.to_dict()])
 
     def handle_length(self, resolved):
         for message in resolved['messages'].keys():
