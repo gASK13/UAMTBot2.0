@@ -1,19 +1,29 @@
-import traceback
 import time
-import os
-import discord
-from .poster.poster import Poster
-from .dynastore.dynastore import DynaStore
+import traceback
+from utils import Poster,DynaStore
 from datetime import datetime
 
+import discord
 
 class UamtBot:
     def __init__(self):
-        self.poster = Poster()
+        # init all commands
+        # Widget.__subclasses__()
+        pass
 
-    def app_id(self):
-        return os.environ['APP_ID'] if 'APP_ID' in os.environ else 'N/A'
+    def response_ephemereal(self, command):
+        # do a quick check - is epehemereal or not?
+        pass
 
+    def handle(self, body):
+        # do type switch - message VS interaction
+        # find handler
+        # HANDLE (including param parsing / checking)
+        # have some SERVICES (user service etc?)
+        pass
+
+
+class OldBot:
     def handle_message(self, command, options):
         if command == 'Age':
             self.handle_age(options.get('resolved'))
@@ -30,7 +40,6 @@ class UamtBot:
             if self.user.get('user').get('id') == '412352063125717002':
                 self.post_response("Bots dispatched...")
                 time.sleep(10)
-                self.post_to_channel(options.get('options'))
                 self.post_response("Bots have delivered their payload.")
             else:
                 self.post_response("Sorry, Dave, I cannot do that.")
@@ -60,7 +69,7 @@ class UamtBot:
             raise
 
     def process_notes(self, options, resolved):
-        self.store = DynaStore(tableName='notes')
+        self.store = DynaStore(table_name='notes')
         subcommand = options[0]['name']
         suboptions = options[0]['options'] if 'options' in options[0] else {}
         if subcommand == 'list':
@@ -199,37 +208,7 @@ class UamtBot:
             json['components'] = components
         if embeds:
             json['embeds'] = embeds
-        self.poster.patch(
-            url='https://discord.com/api/v9/webhooks/' + self.app_id() + '/' + self.token + "/messages/" + msgid,
-            json=json)
-
-    def post_response_ephemereal(self, content, delete=True):
-        # POST makes "NEW REPLY", PATCH makes "EDIT REPLY" (multiple windows vs one!!!)
-        if delete:
-            self.poster.delete(
-                url='https://discord.com/api/v9/webhooks/' + self.app_id() + '/' + self.token + "/messages/@original")
-
-        self.poster.post(
-            url='https://discord.com/api/v9/webhooks/' + self.app_id() + '/' + self.token + "",
-            json={
-                "content": content,
-                "allowed_mentions": {
-                    "parse": []
-                },
-                "flags": (1 << 6)
-            })
-
-    def post_to_channel(self, options):
-        r = self.poster.post(
-            url='https://discord.com/api/v9/channels/' + options[0].get('value') + '/messages',
-            json={
-                "content": options[1].get('value'),
-                "allowed_mentions": {
-                    "users": [options[2].get('value')]
-                }
-            })
-        print(r)
-        print(r.json())
+        Poster.patch_message(self.token, json, message_id=msgid)
 
     def handle_interaction(self, options, message, user, token):
         try:
@@ -251,11 +230,10 @@ class UamtBot:
         return components
 
     def handle_interaction_inner(self, options, message):
-        self.store = DynaStore(tableName='notes')
+        self.store = DynaStore(table_name='notes')
         user_id = self.user['user']['id']
         author_id = message.get('interaction').get('user').get('id')
         if author_id != user_id:
-            self.post_response_ephemereal("Sorry, only <@" + author_id + "> can click on my buttons.", delete=False)
             return
         custom_id = options.get('custom_id')
         if custom_id == 'delete':
@@ -263,8 +241,5 @@ class UamtBot:
             self.post_response(msgid=message.get('id'),
                                components=self.disable_components(message['components']))
         elif custom_id == 'keep':
-            time.sleep(5)
             self.post_response(msgid=message.get('id'),
                                components=self.disable_components(message['components']))
-        else:
-            self.post_response_ephemereal("Sorry, only <@" + author_id + "> can click on my buttons.", delete=False)
