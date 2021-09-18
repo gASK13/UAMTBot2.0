@@ -1,2 +1,2 @@
-from poster import Poster
-from dynastore import DynaStore
+from uamtbot.utils.poster.poster import Poster
+from uamtbot.utils.dynastore.dynastore import DynaStore

@@ -1,6 +1,6 @@
 import time
 import traceback
-from utils import Poster,DynaStore
+from uamtbot.utils import Poster,DynaStore
 from datetime import datetime
 
 import discord
