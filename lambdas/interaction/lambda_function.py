@@ -39,7 +39,7 @@ REQUEST_RESPONSES = {
     3: {
         "response": {
             "type": RESPONSE_TYPES['DEFERRED_UPDATE_MESSAGE'],
-            "data": { }
+            "data": {}
         },
         "process": False,
         "name": "MESSAGE_COMPONENT"
@@ -86,7 +86,7 @@ def lambda_handler(event, context):
 def check_ephemeral(body, response):
     if response["process"]:
         if UamtBot().response_ephemeral(body):
-            UamtBot.set_ephemeral(response['response'])
+            UamtBot.set_ephemeral(response['response']['data'])
 
 
 def run_processing(event, response):
