@@ -1,6 +1,8 @@
 import json
 import boto3
 import os
+from uamtbot import UamtBot
+import copy
 
 from nacl.signing import VerifyKey
 
@@ -36,7 +38,8 @@ REQUEST_RESPONSES = {
     },
     3: {
         "response": {
-            "type": RESPONSE_TYPES['DEFERRED_UPDATE_MESSAGE']
+            "type": RESPONSE_TYPES['UPDATE_MESSAGE'],
+            "data": { }
         },
         "process": True,
         "name": "MESSAGE_COMPONENT"
@@ -45,37 +48,49 @@ REQUEST_RESPONSES = {
 
 
 def verify_signature(event):
-    raw_body = event.get("rawBody")
-    auth_sig = event.get('signature')
-    auth_ts = event.get('timestamp')
-
-    message = auth_ts.encode() + raw_body.encode()
-    verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
-    verify_key.verify(message, bytes.fromhex(auth_sig))
-
-
-def lambda_handler(event, context):
-    print(f"event {event}")
-
-    # verify the signature
     try:
-        verify_signature(event)
+        raw_body = event.get("rawBody")
+        auth_sig = event.get('signature')
+        auth_ts = event.get('timestamp')
+
+        message = auth_ts.encode() + raw_body.encode()
+        verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
+        verify_key.verify(message, bytes.fromhex(auth_sig))
     except Exception as e:
         raise Exception(f"[UNAUTHORIZED] Invalid request signature: {e}")
 
+
+def lambda_handler(event, context):
+    # debug print
+    print(f"event {event}")
+
+    verify_signature(event)
+
     # check type
     body = event.get('body-json')
-    if body.get("type") not in REQUEST_RESPONSES:
-        raise Exception(f"[UNAUTHORIZED] Invalid request type: {body.get('type')}!")
+    response = get_response(body)
 
-    process = REQUEST_RESPONSES[body.get("type")]
+    # check ephemeral
+    if UamtBot().is_ephemereal(body):
+        UamtBot.set_ephemeral(response['response'])
+
+    # update buttons (disable on click if correct user)
+    if not UamtBot.is_interaction_user:
+        response['response']['data']['components'] = UamtBot.disable_components(UamtBot.get_components(body))
 
     # process in new lambda (cause timeout)
-    if process["process"]:
+    if response["process"]:
         boto3.client('lambda').invoke(
             FunctionName=os.environ['PROCESSING_LAMBDA'],
             InvocationType='Event',
             Payload=json.dumps(event)
         )
 
-    return process["response"]
+    return response["response"]
+
+
+def get_response(body):
+    if body.get("type") not in REQUEST_RESPONSES:
+        raise Exception(f"[UNAUTHORIZED] Invalid request type: {body.get('type')}!")
+    process = REQUEST_RESPONSES[body.get("type")]
+    return copy.deepcopy(process)
