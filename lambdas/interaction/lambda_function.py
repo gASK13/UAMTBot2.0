@@ -38,7 +38,7 @@ REQUEST_RESPONSES = {
     },
     3: {
         "response": {
-            "type": RESPONSE_TYPES['UPDATE_MESSAGE'],
+            "type": RESPONSE_TYPES['DEFERRED_UPDATE_MESSAGE'],
             "data": { }
         },
         "process": True,
@@ -75,11 +75,12 @@ def lambda_handler(event, context):
         UamtBot.set_ephemeral(response['response'])
 
     # update buttons (disable on click if correct user)
-    if not UamtBot.is_interaction_user:
+    if UamtBot.is_interaction(body) & UamtBot.is_interaction_user(body):
         response['response']['data']['components'] = UamtBot.disable_components(UamtBot.get_components(body))
+        response['response']['type'] = RESPONSE_TYPES['UPDATE_MESSAGE']
 
     # process in new lambda (cause timeout)
-    if response["process"]:
+    if (response["process"]) & (not UamtBot.is_interaction(body) | UamtBot.is_interaction_user(body)):
         boto3.client('lambda').invoke(
             FunctionName=os.environ['PROCESSING_LAMBDA'],
             InvocationType='Event',
