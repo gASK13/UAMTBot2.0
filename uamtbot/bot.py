@@ -11,8 +11,10 @@ class UamtBot:
         # Widget.__subclasses__()
         pass
 
-    def response_ephemeral(self, command):
+    def response_ephemeral(self, body):
         # do a quick check - is ephemeral or not?
+        if command['name'] == 'length':
+            return True
         return False
 
     def handle(self, body):
@@ -21,12 +23,43 @@ class UamtBot:
         user = body.get('member')
         token = body.get('token')
         if type == 2:
-            Poster.patch_message(token, {
-                "content": "Got your command " + options.get('name') + ".",
-                "allowed_mentions": {
-                    "parse": []
-                }
-            })
+            if options.get('name') == 'notes':
+                Poster.patch_message(token, {
+                    "content": "Got your command " + options.get('name') + ".",
+                    "allowed_mentions": {
+                        "parse": []
+                    },
+                    "components": [{
+                        "type": 1,
+                        "components": [
+                            {
+                                "type": 2,
+                                "label": "Delete",
+                                "style": 4,
+                                "custom_id": "delete",
+                                "emoji": {
+                                    "name": "rip",
+                                    "id": "512360112820584448"
+                                }
+                            },
+                            {
+                                "type": 2,
+                                "label": "I changed my mind",
+                                "style": 2,
+                                "custom_id": "keep"
+                            }
+                        ]
+
+                    }
+                    ]
+                })
+            else:
+                Poster.patch_message(token, {
+                    "content": "Got your command " + options.get('name') + ".",
+                    "allowed_mentions": {
+                        "parse": []
+                    }
+                })
         elif type == 3:
             Poster.post_message(token, UamtBot.set_ephemeral({
                 "content": "Got your interaction. Wink wink.",
