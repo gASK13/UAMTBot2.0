@@ -58,7 +58,7 @@ jobs:
         run: zip -qq -r ./interaction.zip *
         working-directory: lambdas/interaction
       - name: Zip bot code into processing
-        run: zip -r lambdas/processing/interaction.zip ./uamtbot
+        run: zip -r lambdas/interaction/interaction.zip ./uamtbot
       - name: Deploy interaction Lambda
         uses: appleboy/lambda-action@master
         with:
