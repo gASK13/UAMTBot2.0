@@ -79,6 +79,7 @@ def lambda_handler(event, context):
     # process in new lambda (cause timeout)
     run_processing(event, response)
 
+    print(f"reponse {response['response']}")
     return response["response"]
 
 
