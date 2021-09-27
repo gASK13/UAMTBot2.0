@@ -71,7 +71,7 @@ def lambda_handler(event, context):
     response = get_response(body)
 
     # check ephemeral
-    if UamtBot().is_ephemereal(body):
+    if UamtBot().response_ephemeral(body):
         UamtBot.set_ephemeral(response['response'])
 
     # update buttons (disable on click if correct user)
