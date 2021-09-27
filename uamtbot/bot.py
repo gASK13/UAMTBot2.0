@@ -53,13 +53,6 @@ class UamtBot:
                     }
                     ]
                 })
-            elif options.get('name').lower() == 'length':
-                Poster.patch_message(token, UamtBot.set_ephemeral({
-                    "content": "Got your command " + options.get('name') + ".",
-                    "allowed_mentions": {
-                        "parse": []
-                    }
-                }))
             else:
                 Poster.patch_message(token, {
                     "content": "Got your command " + options.get('name') + ".",
