@@ -13,7 +13,7 @@ class UamtBot:
 
     def response_ephemeral(self, body):
         # do a quick check - is ephemeral or not?
-        if body['name'] == 'length':
+        if body['data']['name'] == 'length':
             return True
         return False
 
