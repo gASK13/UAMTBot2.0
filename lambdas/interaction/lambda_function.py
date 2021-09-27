@@ -41,7 +41,7 @@ REQUEST_RESPONSES = {
             "type": RESPONSE_TYPES['DEFERRED_UPDATE_MESSAGE'],
             "data": { }
         },
-        "process": True,
+        "process": False,
         "name": "MESSAGE_COMPONENT"
     }
 }
@@ -71,8 +71,7 @@ def lambda_handler(event, context):
     response = get_response(body)
 
     # check ephemeral
-    if UamtBot().response_ephemeral(body):
-        UamtBot.set_ephemeral(response['response'])
+    check_ephemeral(body, response)
 
     # update buttons (disable on click if correct user)
     modify_interaction_response(body, response)
@@ -81,6 +80,12 @@ def lambda_handler(event, context):
     run_processing(event, response)
 
     return response["response"]
+
+
+def check_ephemeral(body, response):
+    if response["process"]:
+        if UamtBot().response_ephemeral(body):
+            UamtBot.set_ephemeral(response['response'])
 
 
 def run_processing(event, response):
@@ -97,8 +102,7 @@ def modify_interaction_response(body, response):
         if UamtBot.is_interaction_user(body):
             response['response']['data']['components'] = UamtBot.disable_components(UamtBot.get_components(body))
             response['response']['type'] = RESPONSE_TYPES['UPDATE_MESSAGE']
-        else:
-            response['process'] = False
+            response['process'] = True
 
 
 def get_response(body):
