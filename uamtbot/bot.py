@@ -13,7 +13,7 @@ class UamtBot:
 
     def response_ephemeral(self, command):
         # do a quick check - is ephemeral or not?
-        pass
+        return False
 
     def handle(self, body):
         type = body.get('type')
