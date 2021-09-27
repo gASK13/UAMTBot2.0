@@ -85,9 +85,9 @@ class UamtBot:
 
     @staticmethod
     def is_interaction_user(body):
-            user_id = body['member']['user']['id']
-            author_id = body['message']['interaction']['user']['id']
-            return author_id == user_id
+        user_id = body['member']['user']['id']
+        author_id = body['message']['interaction']['user']['id']
+        return author_id == user_id
 
     @staticmethod
     def get_components(body):

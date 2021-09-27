@@ -75,19 +75,30 @@ def lambda_handler(event, context):
         UamtBot.set_ephemeral(response['response'])
 
     # update buttons (disable on click if correct user)
-    if UamtBot.is_interaction(body) & UamtBot.is_interaction_user(body):
-        response['response']['data']['components'] = UamtBot.disable_components(UamtBot.get_components(body))
-        response['response']['type'] = RESPONSE_TYPES['UPDATE_MESSAGE']
+    modify_interaction_response(body, response)
 
     # process in new lambda (cause timeout)
-    if (response["process"]) & (not UamtBot.is_interaction(body) | UamtBot.is_interaction_user(body)):
+    run_processing(event, response)
+
+    return response["response"]
+
+
+def run_processing(event, response):
+    if response["process"]:
         boto3.client('lambda').invoke(
             FunctionName=os.environ['PROCESSING_LAMBDA'],
             InvocationType='Event',
             Payload=json.dumps(event)
         )
 
-    return response["response"]
+
+def modify_interaction_response(body, response):
+    if UamtBot.is_interaction(body):
+        if UamtBot.is_interaction_user(body):
+            response['response']['data']['components'] = UamtBot.disable_components(UamtBot.get_components(body))
+            response['response']['type'] = RESPONSE_TYPES['UPDATE_MESSAGE']
+        else:
+            response['process'] = False
 
 
 def get_response(body):
