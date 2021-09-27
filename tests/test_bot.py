@@ -28,7 +28,7 @@ class TestBotHandler(unittest.TestCase):
         })
 
     def test_ephemeral(self):
-        UamtBot().response_ephemeral({'name': 'slap', 'options': [{'value': 'test test'}]})
+        UamtBot().response_ephemeral({'data' : {'name': 'slap', 'options': [{'value': 'test test'}]}})
 
     def test_get_components(self):
         comp = UamtBot().get_components({'message': {'components': 'RIGHT'}})
