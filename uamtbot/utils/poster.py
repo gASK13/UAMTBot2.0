@@ -8,7 +8,7 @@ class Poster:
     API_URL = 'https://discord.com/api/v9/'
     POST_TO_CHANNEL = '{api_url}/channels/{channel_id}/messages'
     PATCH_MESSAGE = '{api_url}/webhooks/{app_id}/{token}/messages/{msg_id}'
-    POST_MESSAGE = '{api_url}/webhooks/{app_id}/{token}/messages'
+    POST_MESSAGE = '{api_url}/webhooks/{app_id}/{token}'
 
     def __init__(self):
         pass
