@@ -6,11 +6,14 @@ from uamtbot import UamtBot
 
 class TestBotHandler(unittest.TestCase):
 
+    # TODO: proper handle with "mock command handlers" (register overload?)
+    # TODO: tests of age handler (yes)
+
     @patch.object(Poster, 'patch_message')
     def test_handle_message(self, mock_method):
         UamtBot().handle({'type': 2, 'data': {'name': 'slap'}, 'token': 'token'})
         Poster.patch_message.assert_called_with('token', {
-            "content": "Sorry, no handler for slap",
+            "content": "Sorry, no handler for this command.",
             "allowed_mentions": {
                 "parse": []
             }
@@ -32,7 +35,7 @@ class TestBotHandler(unittest.TestCase):
         assert eph
 
     def test_ephemeral_age(self):
-        eph = UamtBot().response_ephemeral({'data': {'name': 'age', 'options': [{'value': 'test test'}]}})
+        eph = UamtBot().response_ephemeral({'data': {'name': 'age', 'type' : 2, 'options': [{'value': 'test test'}]}})
         assert not eph
 
     def test_get_components(self):

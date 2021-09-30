@@ -6,23 +6,40 @@ from datetime import datetime
 from uamtbot.commands import *
 
 
+def register_commands(cls=command.Command, command_map={1: {}, 2: {}, 3: {}}):
+    for cmd in cls.__subclasses__():
+        register_commands(cmd, command_map)
+        if cmd.name() is not None:
+            command_map[cmd.type()][cmd.name().lower()] = cmd
+    return command_map
+
+
 class UamtBot:
     def __init__(self):
         # init all commands
-        self.command_map = {}
-        for cmd in command.Command.__subclasses__():
-            self.command_map[cmd.name().lower()] = cmd
+        self.command_map = register_commands()
 
     def response_ephemeral(self, body):
         # do a quick check - is ephemeral or not?
-        cmd_name = self.get_command_name(body)
-        if cmd_name in self.command_map:
-            return self.command_map[cmd_name].ephemeral()
+        cmd = self.get_command_handler_class(body)
+        if cmd is not None:
+            return cmd.ephemeral()
         return True
+
+    def get_command_handler_class(self, body):
+        cmd_name = self.get_command_name(body)
+        cmd_type = self.get_command_type(body)
+        if cmd_name in self.command_map[cmd_type]:
+            return self.command_map[cmd_type][cmd_name]
+        return None
 
     @staticmethod
     def get_command_name(body):
         return body['data']['name'].lower()
+
+    @staticmethod
+    def get_command_type(body):
+        return body['data']['type'] if 'type' in body['data'] else 1
 
     def handle(self, body):
         type = body.get('type')
@@ -30,12 +47,13 @@ class UamtBot:
         user = body.get('member')
         token = body.get('token')
         if type == 2:
-            cmd_name = self.get_command_name(body)
-            if cmd_name in self.command_map:
-                msg = 'Found handler for command' + cmd_name
+            cmd = self.get_command_handler_class(body)
+            if cmd is not None:
+                Poster.patch_message(token, cmd.handle(body))
             else:
-                msg = 'Sorry, no handler for ' + cmd_name
+                msg = 'Sorry, no handler for this command.'
 
+            # to be removed
             if options.get('name').lower() == 'notes':
                 Poster.patch_message(token, {
                     "content": msg,
