@@ -1,21 +1,28 @@
 import time
 import traceback
+import discord
 from uamtbot.utils import Poster, DynaStore
 from datetime import datetime
-import discord
+from uamtbot.commands import *
 
 
 class UamtBot:
     def __init__(self):
         # init all commands
-        # Widget.__subclasses__()
-        pass
+        self.command_map = {}
+        for cmd in command.Command.__subclasses__():
+            self.command_map[cmd.name().lower()] = cmd
 
     def response_ephemeral(self, body):
         # do a quick check - is ephemeral or not?
-        if body['data']['name'].lower() == 'length':
-            return True
-        return False
+        cmd_name = self.get_command_name(body)
+        if cmd_name in self.command_map:
+            return self.command_map[cmd_name].ephemeral()
+        return True
+
+    @staticmethod
+    def get_command_name(body):
+        return body['data']['name'].lower()
 
     def handle(self, body):
         type = body.get('type')
@@ -23,9 +30,15 @@ class UamtBot:
         user = body.get('member')
         token = body.get('token')
         if type == 2:
+            cmd_name = self.get_command_name(body)
+            if cmd_name in self.command_map:
+                msg = 'Found handler for command' + cmd_name
+            else:
+                msg = 'Sorry, no handler for ' + cmd_name
+
             if options.get('name').lower() == 'notes':
                 Poster.patch_message(token, {
-                    "content": "Got your command " + options.get('name') + ".",
+                    "content": msg,
                     "allowed_mentions": {
                         "parse": []
                     },
@@ -55,7 +68,7 @@ class UamtBot:
                 })
             else:
                 Poster.patch_message(token, {
-                    "content": "Got your command " + options.get('name') + ".",
+                    "content": msg,
                     "allowed_mentions": {
                         "parse": []
                     }

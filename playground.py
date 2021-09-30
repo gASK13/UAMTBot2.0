@@ -31,3 +31,5 @@ class XorComm (OrComm):
 for c in Comm.__subclasses__():
     print(str(c))
     print(c.name())
+    x = c
+    print(x.name())
