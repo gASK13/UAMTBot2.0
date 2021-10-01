@@ -47,6 +47,10 @@ REQUEST_RESPONSES = {
 }
 
 
+def is_dummy_event(event):
+    return 'dummy_event' in event
+
+
 def verify_signature(event):
     try:
         raw_body = event.get("rawBody")
@@ -63,6 +67,9 @@ def verify_signature(event):
 def lambda_handler(event, context):
     # debug print
     print(f"event {event}")
+
+    if is_dummy_event(event):
+        return 'STILL WARM'
 
     verify_signature(event)
 
