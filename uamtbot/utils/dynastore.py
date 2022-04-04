@@ -4,7 +4,7 @@ from botocore.exceptions import ClientError
 
 class DynaStore:
     def __init__(self, table_name):
-        #self.dynamodb = boto3.Session().resource('dynamodb', region_name='us-east-1')
+        self.dynamodb = boto3.Session().resource('dynamodb', region_name='us-east-1')
         self.table = self.dynamodb.Table(table_name)
 
     def store(self, key, value):
