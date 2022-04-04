@@ -1,8 +1,4 @@
-import time
-import traceback
-import discord
 from uamtbot.utils import Poster, DynaStore
-from datetime import datetime
 from uamtbot.commands import *
 
 

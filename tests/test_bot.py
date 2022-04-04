@@ -12,7 +12,7 @@ class TestBotHandler(unittest.TestCase):
     @patch.object(Poster, 'patch_message')
     def test_handle_message(self, mock_method):
         UamtBot().handle({'type': 2, 'data': {'name': 'slap'}, 'token': 'token'})
-        Poster.patch_message.assert_called_with('token', {
+        mock_method.assert_called_with('token', {
             "content": "Sorry, no handler for this command.",
             "allowed_mentions": {
                 "parse": []
@@ -22,7 +22,7 @@ class TestBotHandler(unittest.TestCase):
     @patch.object(Poster, 'post_message')
     def test_handle_interaction(self, mock_method):
         UamtBot().handle({'type': 3, 'token': 'token'})
-        Poster.post_message.assert_called_with('token', {
+        mock_method.assert_called_with('token', {
             "content": "Got your interaction. Wink wink.",
             "allowed_mentions": {
                 "parse": []
