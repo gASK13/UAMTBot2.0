@@ -33,7 +33,7 @@ class AgeCommand(Command):
     @staticmethod
     def handle(body):
         subcommand = body['data']['options'][0]['name']
-        user_id = body['data']['user']['id']
+        user_id = body['data']['member']['user']['id']
         if subcommand == 'show':
             settings = AgeCommand.get_settings(user_id)
             settings['age'] = {'show': True}
