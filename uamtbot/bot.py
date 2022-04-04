@@ -45,7 +45,10 @@ class UamtBot:
         if type == 2:
             cmd = self.get_command_handler_class(body)
             if cmd is not None:
-                Poster.patch_message(token, cmd.handle(body))
+                try:
+                    Poster.patch_message(token, cmd.handle(body))
+                except:
+                    Poster.patch_message(token, 'BORK BORK. Please let <@412352063125717002> know!')
             else:
                 msg = 'Sorry, no handler for this command.'
 
