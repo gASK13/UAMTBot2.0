@@ -1,5 +1,6 @@
 from uamtbot.utils import Poster, DynaStore
 from uamtbot.commands import *
+import traceback
 
 
 def register_commands(cls=command.Command, command_map={1: {}, 2: {}, 3: {}}):
@@ -47,8 +48,9 @@ class UamtBot:
             if cmd is not None:
                 try:
                     Poster.patch_message(token, cmd.handle(body))
-                except:
+                except Exception:
                     Poster.patch_message(token, 'BORK BORK. Please let <@412352063125717002> know!')
+                    print(traceback.format_exc())
             else:
                 msg = 'Sorry, no handler for this command.'
 
